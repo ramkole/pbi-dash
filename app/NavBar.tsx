@@ -11,7 +11,7 @@ const NavBar = () => {
 
   const links = [
     { label: "DashBaord", href: "/" },
-    { label: "Tasks", href: "/Tasks" },
+    { label: "Tasks", href: "/tasks" },
   ];
 
   return (
