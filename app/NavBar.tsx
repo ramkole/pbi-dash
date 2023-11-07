@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { FcParallelTasks } from "react-icons/fc";
+import { GiEmptyHourglass } from "react-icons/gi";
 import classnames from "classnames";
 
 const NavBar = () => {
@@ -11,13 +11,13 @@ const NavBar = () => {
 
   const links = [
     { label: "DashBaord", href: "/" },
-    { label: "Stories", href: "/Stories" },
+    { label: "Tasks", href: "/Tasks" },
   ];
 
   return (
     <nav className="flex space-x-6 border-b mb-5 px-5 h-14 items-center">
       <Link href="/">
-        <FcParallelTasks />
+        <GiEmptyHourglass className="h-6 w-6" />
       </Link>
       <ul className="flex space-x-6">
         {links.map((link) => (
