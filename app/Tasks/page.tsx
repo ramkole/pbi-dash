@@ -1,16 +1,13 @@
-"use client";
-
 import prisma from "@/prisma/client";
-import { Button, Table } from "@radix-ui/themes";
-import Link from "next/link";
+import { Table } from "@radix-ui/themes";
 import React from "react";
 import TaskStatusBadge from "../components/TaskStatusBadge";
-import delay from "delay";
 import TaskAction from "./TaskAction";
+import delay from "delay";
 
 const TaskPage = async () => {
   const allTasks = await prisma.pbi.findMany();
-  await delay(7000);
+  await delay(2000);
   return (
     <div>
       <TaskAction />
