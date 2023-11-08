@@ -1,9 +1,8 @@
 import prisma from "@/prisma/client";
 import { Table } from "@radix-ui/themes";
-import React from "react";
-import TaskStatusBadge from "../components/TaskStatusBadge";
-import TaskAction from "./TaskAction";
 import delay from "delay";
+import { TaskLink, TaskStatusBadge } from "../components";
+import TaskAction from "./TaskAction";
 
 const TaskPage = async () => {
   const allTasks = await prisma.pbi.findMany();
@@ -24,19 +23,19 @@ const TaskPage = async () => {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {allTasks.map((issue) => (
-            <Table.Row key={issue.id}>
+          {allTasks.map((task) => (
+            <Table.Row key={task.id}>
               <Table.Cell>
-                {issue.title}
+                <TaskLink href={`/tasks/${task.id}`}>{task.title}</TaskLink>
                 <div className="block md:hidden">
-                  <TaskStatusBadge status={issue.status} />{" "}
+                  <TaskStatusBadge status={task.status} />{" "}
                 </div>
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
-                <TaskStatusBadge status={issue.status} />
+                <TaskStatusBadge status={task.status} />
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">
-                {issue.createdAt.toDateString()}
+                {task.createdAt.toDateString()}
               </Table.Cell>
             </Table.Row>
           ))}
