@@ -9,7 +9,8 @@ import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createPbiSchema } from "@/app/validationSchema";
 import { z } from "zod";
-import ErrorMessage from "@/app/components/errorMessage";
+import ErrorMessage from "@/app/components/ErrorMessage";
+import Spinner from "@/app/components/Spinner";
 
 type NewPbiForm = z.infer<typeof createPbiSchema>;
 
@@ -24,6 +25,19 @@ const NewPbiPage = () => {
     resolver: zodResolver(createPbiSchema),
   });
   const [error, setError] = useState("");
+  const [isSubmitting, setSubmitting] = useState(false);
+
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      setSubmitting(true);
+      await axios.post("/api/pbi", data);
+      router.push("/tasks");
+    } catch (error) {
+      setSubmitting(false);
+      setError("Unexpected error");
+    }
+  });
+
   return (
     <div className="max-w-xl">
       {error && (
@@ -31,17 +45,7 @@ const NewPbiPage = () => {
           <Callout.Text>{error}</Callout.Text>
         </Callout.Root>
       )}
-      <form
-        className="space-y-3"
-        onSubmit={handleSubmit(async (data) => {
-          try {
-            await axios.post("/api/pbi", data);
-            router.push("/tasks");
-          } catch (error) {
-            setError("Unexpected error");
-          }
-        })}
-      >
+      <form className="space-y-3" onSubmit={onSubmit}>
         <TextField.Root>
           <TextField.Input placeholder="title" {...register("title")} />
         </TextField.Root>
@@ -55,7 +59,9 @@ const NewPbiPage = () => {
         />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
 
-        <Button>Create Task</Button>
+        <Button disabled={isSubmitting}>
+          Create Task {isSubmitting && <Spinner />}
+        </Button>
       </form>
     </div>
   );

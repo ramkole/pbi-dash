@@ -8,7 +8,7 @@ const page = () => {
   return (
     <div>
       <Button>
-        <Link href="/tasks/new">New PBI</Link>
+        <Link href="/tasks/new">New Task</Link>
       </Button>
     </div>
   );
