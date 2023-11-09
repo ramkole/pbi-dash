@@ -16,7 +16,6 @@ export async function PATCH(request: NextRequest, {params} : {params: {id : stri
       id: parseInt(params.id),
     },
   });
-console.log('findTask',findTask);
 
   if(!findTask)
   return NextResponse.json({error: 'Invalid Task'}, { status: 404 })

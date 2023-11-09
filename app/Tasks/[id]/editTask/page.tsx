@@ -11,7 +11,6 @@ const EditFormPage = async ({ params }: Props) => {
   const task = await prisma.pbi.findUnique({
     where: { id: parseInt(params.id) },
   });
-  console.log("task", task);
 
   if (!task) notFound();
 
