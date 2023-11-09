@@ -28,7 +28,7 @@ const TaskPage = async () => {
               <Table.Cell>
                 <TaskLink href={`/tasks/${task.id}`}>{task.title}</TaskLink>
                 <div className="block md:hidden">
-                  <TaskStatusBadge status={task.status} />{" "}
+                  <TaskStatusBadge status={task.status} />
                 </div>
               </Table.Cell>
               <Table.Cell className="hidden md:table-cell">

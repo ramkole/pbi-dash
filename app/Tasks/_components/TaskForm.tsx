@@ -1,7 +1,8 @@
 "use client";
 import { ErrorMessage, Spinner } from "@/app/components";
-import { createPbiSchema } from "@/app/validationSchema";
+import { TaskSchema } from "@/app/validationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Pbi } from "@prisma/client";
 import { Button, Callout, TextField } from "@radix-ui/themes";
 import axios from "axios";
 import "easymde/dist/easymde.min.css";
@@ -11,17 +12,17 @@ import { Controller, useForm } from "react-hook-form";
 import SimpleMDE from "react-simplemde-editor";
 import { z } from "zod";
 
-type NewPbiForm = z.infer<typeof createPbiSchema>;
+type PbiFormData = z.infer<typeof TaskSchema>;
 
-const NewPbiPage = () => {
+const TaskFormPage = ({ task }: { task?: Pbi }) => {
   const router = useRouter();
   const {
     register,
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<NewPbiForm>({
-    resolver: zodResolver(createPbiSchema),
+  } = useForm<PbiFormData>({
+    resolver: zodResolver(TaskSchema),
   });
   const [error, setError] = useState("");
   const [isSubmitting, setSubmitting] = useState(false);
@@ -29,8 +30,10 @@ const NewPbiPage = () => {
   const onSubmit = handleSubmit(async (data) => {
     try {
       setSubmitting(true);
-      await axios.post("/api/pbi", data);
+      if (task) await axios.patch("/api/pbi/" + task.id, data);
+      else await axios.post("/api/pbi", data);
       router.push("/tasks");
+      router.refresh();
     } catch (error) {
       setSubmitting(false);
       setError("Unexpected error");
@@ -46,12 +49,17 @@ const NewPbiPage = () => {
       )}
       <form className="space-y-3" onSubmit={onSubmit}>
         <TextField.Root>
-          <TextField.Input placeholder="title" {...register("title")} />
+          <TextField.Input
+            defaultValue={task?.title}
+            placeholder="title"
+            {...register("title")}
+          />
         </TextField.Root>
         <ErrorMessage>{errors.title?.message}</ErrorMessage>
         <Controller
           name="description"
           control={control}
+          defaultValue={task?.description}
           render={({ field }) => (
             <SimpleMDE placeholder="description" {...field} />
           )}
@@ -59,11 +67,11 @@ const NewPbiPage = () => {
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
 
         <Button disabled={isSubmitting}>
-          Create Task {isSubmitting && <Spinner />}
+          {task ? "Update Task" : "Create Task"} {isSubmitting && <Spinner />}
         </Button>
       </form>
     </div>
   );
 };
 
-export default NewPbiPage;
+export default TaskFormPage;
