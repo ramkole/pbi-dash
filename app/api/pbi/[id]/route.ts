@@ -31,3 +31,23 @@ export async function PATCH(request: NextRequest, {params} : {params: {id : stri
 
   return NextResponse.json(updatedTask);
 }
+
+export async function DELETE(request: NextRequest, {params} : {params: {id : string}}) {
+
+  const findTask = await prisma.pbi.findUnique({
+    where: {
+      id: parseInt(params.id),
+    },
+  });
+
+  if(!findTask)
+  return NextResponse.json({error: 'Invalid Task'}, { status: 404 })
+
+await prisma.pbi.delete({
+    where: {
+        id: findTask.id,
+      },
+  });
+
+  return NextResponse.json({});
+}
